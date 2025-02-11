@@ -19,9 +19,10 @@ export default function Signup() {
     setError("");
 
     try {
+      // Passing isSignup and name along with credentials
       const res = await signIn("credentials", {
         ...form,
-        isSignup: "true",
+        isSignup: "true", // Set the flag for signup
         redirect: false,
       });
 

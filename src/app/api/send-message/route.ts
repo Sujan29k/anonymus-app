@@ -3,6 +3,13 @@ import connectDB from "@/lib/mongodb";
 import Message from "@/model/Message";
 import User from "@/model/User";
 
+import { z } from "zod";
+
+const messageSchema = z.object({
+  uniqueLink: z.string().min(3),
+  message: z.string().min(1).max(500),
+});
+
 export async function POST(req: Request) {
   await connectDB();
   const { uniqueLink, message } = await req.json();
