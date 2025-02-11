@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import styles from "./signup.module.css"; // Adjust the path as needed
 
 export default function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -35,41 +36,66 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">Signup</h1>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Signup
-        </button>
-      </form>
-      <p>
-        Already have an account?{" "}
-        <a href="/login" className="text-blue-600">
-          Login
-        </a>
-      </p>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Create Account</h1>
+        {error && <p className={styles.error}>{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className={styles.formGroup}>
+            <label htmlFor="name" className={styles.label}>
+              Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="email" className={styles.label}>
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              required
+              className={styles.input}
+            />
+          </div>
+          <button type="submit" className={styles.button}>
+            Signup
+          </button>
+        </form>
+        <div className={styles.linkContainer}>
+          <p>
+            Already have an account?{" "}
+            <a href="/login" className={styles.link}>
+              Login
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
