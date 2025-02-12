@@ -3,26 +3,43 @@ import connectDB from "@/lib/mongodb";
 import Message from "@/model/Message";
 import User from "@/model/User";
 
-import { z } from "zod";
-
-const messageSchema = z.object({
-  uniqueLink: z.string().min(3),
-  message: z.string().min(1).max(500),
-});
-
 export async function POST(req: Request) {
-  await connectDB();
-  const { uniqueLink, message } = await req.json();
+  try {
+    await connectDB();
 
-  if (!uniqueLink || !message) {
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+    const { uniqueLink, message } = await req.json();
+
+    console.log("Received request:", { uniqueLink, message });
+
+    if (!uniqueLink || !message) {
+      return NextResponse.json(
+        { error: "Invalid request. Missing data." },
+        { status: 400 }
+      );
+    }
+
+    const user = await User.findOne({ uniqueLink });
+
+    if (!user) {
+      console.error("User not found for uniqueLink:", uniqueLink);
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const newMessage = new Message({
+      userId: user._id,
+      message,
+      timestamp: new Date(),
+    });
+
+    await newMessage.save();
+
+    console.log("Message saved successfully:", newMessage);
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Error in /api/send-message:", error);
+    return NextResponse.json(
+      { error: "Failed to send the message" },
+      { status: 500 }
+    );
   }
-
-  const user = await User.findOne({ uniqueLink });
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
-
-  await Message.create({ userId: user._id, message });
-  return NextResponse.json({ success: "Message sent" }, { status: 201 });
 }

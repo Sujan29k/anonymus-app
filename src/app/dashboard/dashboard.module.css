@@ -1,0 +1,101 @@
+.dashboardContainer {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .greeting {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .linkSection {
+    margin-bottom: 2rem;
+  }
+  
+  .linkSection p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .linkContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .linkInput {
+    width: 80%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+  
+  .copyButton {
+    padding: 0.6rem 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .copyButton:hover {
+    background-color: #45a049;
+  }
+  
+  .messagesSection {
+    margin-top: 2rem;
+  }
+  
+  .messagesSection h2 {
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .messagesList {
+    margin-top: 1rem;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .messageItem {
+    background-color: #fff;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    color: #444;
+  }
+  
+  .messageItem:last-child {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .linkContainer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .linkInput {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  
+    .copyButton {
+      width: 100%;
+    }
+  }
+  

@@ -4,19 +4,35 @@ import Message from "@/model/Message";
 import User from "@/model/User";
 
 export async function GET(req: Request) {
-  await connectDB();
-  const url = new URL(req.url);
-  const uniqueLink = url.searchParams.get("uniqueLink");
+  console.log("Fetching messages..."); // Debugging log
 
-  if (!uniqueLink) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  try {
+    await connectDB();
+
+    const url = new URL(req.url);
+    const uniqueLink = url.searchParams.get("uniqueLink");
+
+    if (!uniqueLink) {
+      console.log("Missing uniqueLink in request");
+      return NextResponse.json(
+        { error: "Missing unique link" },
+        { status: 400 }
+      );
+    }
+
+    const user = await User.findOne({ uniqueLink });
+    if (!user) {
+      console.log("User not found for uniqueLink:", uniqueLink);
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const messages = await Message.find({ userId: user._id });
+
+    console.log("Messages fetched:", messages);
+
+    return NextResponse.json({ messages }, { status: 200 });
+  } catch (error) {
+    console.error("API Error:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
-
-  const user = await User.findOne({ uniqueLink });
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
-
-  const messages = await Message.find({ userId: user._id });
-  return NextResponse.json({ messages }, { status: 200 });
 }
