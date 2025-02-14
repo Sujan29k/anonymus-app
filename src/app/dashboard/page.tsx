@@ -22,19 +22,35 @@ export default function Dashboard() {
       const res = await fetch(`/api/messages?uniqueLink=${uniqueLink}`);
 
       if (!res.ok) {
-        throw new Error(`API Error: ${res.status} ${res.statusText}`);
+        let errorMessage = `API Error: ${res.status} ${res.statusText}`;
+
+        // Ensure the response is JSON before parsing it
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await res.json();
+          errorMessage = errorData.error || errorMessage;
+        }
+
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();
-      console.log("Fetched messages:", data); // Debugging log
+      console.log("Fetched messages:", data);
 
       if (data.messages?.length > 0) {
         setMessages(data.messages);
       } else {
+        setMessages([]); // Ensure empty array if no messages exist
         console.warn("No messages received from API");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Failed to fetch messages:", err);
+
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
     } finally {
       setLoading(false);
     }
