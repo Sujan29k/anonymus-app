@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react"; // Import signOut
 import { useEffect, useState } from "react";
 import type { IMessage } from "@/model/Message";
 import styles from "./dashboard.module.css"; // Ensure this file exists
@@ -76,6 +76,14 @@ export default function Dashboard() {
   return (
     <div className={styles.dashboardContainer}>
       <h1 className={styles.greeting}>Welcome, {session.user.name}</h1>
+
+      {/* Logout Button */}
+      <button
+        onClick={() => signOut({ callbackUrl: "/" })}
+        className={styles.logoutButton}
+      >
+        Logout
+      </button>
 
       <section className={styles.linkSection}>
         <p>Your anonymous message link:</p>

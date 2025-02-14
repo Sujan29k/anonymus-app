@@ -83,6 +83,36 @@
     margin-bottom: 0;
   }
   
+  .logoutButton {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .logoutButton:hover {
+    background-color: #e60000;
+  }
+  .deleteButton {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .deleteButton:hover {
+    background-color: darkred;
+  }
+  
+  
   @media (max-width: 768px) {
     .linkContainer {
       flex-direction: column;
@@ -98,4 +128,5 @@
       width: 100%;
     }
   }
+
   

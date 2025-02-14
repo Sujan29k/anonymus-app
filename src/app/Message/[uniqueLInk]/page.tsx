@@ -14,15 +14,18 @@ export default function SendMessage({
   const handleSend = async () => {
     try {
       console.log("📩 Sending message...");
-  
+
       const res = await fetch("/api/send-message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uniqueLink: (await params).uniqueLink, message }),
+        body: JSON.stringify({
+          uniqueLink: (await params).uniqueLink,
+          message,
+        }),
       });
-  
+
       const data = await res.json().catch(() => null); // Handle empty response
-  
+
       if (res.ok) {
         console.log("✅ Message sent:", data);
         setMessage("");
@@ -33,7 +36,7 @@ export default function SendMessage({
       console.error("🚨 Fetch error:", error);
     }
   };
-  
+
   return (
     <div>
       <h1>Send an Anonymous Message</h1>
