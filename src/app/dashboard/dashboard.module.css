@@ -97,20 +97,22 @@
   .logoutButton:hover {
     background-color: #e60000;
   }
-  .deleteButton {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    margin-left: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .deleteButton:hover {
-    background-color: darkred;
-  }
+  /* src/app/Message/[uniqueLink]/page.module.css */
+
+.deleteButton {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+  border-radius: 5px;
+}
+
+.deleteButton:hover {
+  background-color: darkred;
+}
+
   
   
   @media (max-width: 768px) {

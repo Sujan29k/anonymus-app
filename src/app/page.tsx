@@ -1,5 +1,12 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-  return <div className="text-center">anonymus app</div>;
+  return (
+    <div className="text-center">
+      <p>Anonymous App</p>
+      <Link href="/login" className="text-black">
+        Login
+      </Link>
+    </div>
+  );
 }

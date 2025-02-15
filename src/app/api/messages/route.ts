@@ -4,7 +4,7 @@ import Message from "@/model/Message";
 import User from "@/model/User";
 
 export async function GET(req: Request) {
-  console.log("Fetching messages..."); // Debugging log
+  console.log("Fetching messages...");
 
   try {
     await connectDB();
@@ -26,7 +26,9 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const messages = await Message.find({ userId: user._id });
+    const messages = await Message.find({ userId: user._id })
+      .select("senderName message createdAt") // Include senderName in response
+      .sort({ createdAt: -1 }); // Sort messages by newest first
 
     console.log("Messages fetched:", messages);
 

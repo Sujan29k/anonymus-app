@@ -5,9 +5,10 @@ import User from "@/model/User";
 
 export async function POST(req: Request) {
   try {
-    const { uniqueLink, message } = await req.json();
+    const { uniqueLink, senderName, message } = await req.json();
 
-    console.log("Received data:", { uniqueLink, message }); // Log for debugging
+    // Log the received data for debugging
+    console.log("Received data:", { uniqueLink, senderName, message });
 
     if (!uniqueLink || !message) {
       return NextResponse.json(
@@ -16,18 +17,23 @@ export async function POST(req: Request) {
       );
     }
 
-    // Your database and message saving logic here
+    // Connect to the database
     await connectDB();
+
+    // Find the user by unique link
     const user = await User.findOne({ uniqueLink });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Create a new message with the provided senderName or default to "Anonymous"
     const newMessage = new Message({
       userId: user._id,
+      senderName: senderName || "Anonymous",
       message,
     });
-
+    console.log("Message to be saved:", newMessage);
+    // Save the message to the database
     await newMessage.save();
 
     return NextResponse.json(
