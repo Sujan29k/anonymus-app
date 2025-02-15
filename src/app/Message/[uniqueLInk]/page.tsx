@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import styles from "./page.module.css";
 
 export default function SendMessage() {
-  const params = useParams(); // ✅ Correct way to access params in client components
-  const uniqueLink = params?.uniqueLink as string; // Extracting uniqueLink properly
+  const params = useParams();
+  const uniqueLink = params?.uniqueLink as string;
 
   const [senderName, setSenderName] = useState("");
   const [message, setMessage] = useState("");
@@ -16,6 +17,8 @@ export default function SendMessage() {
       setStatus("Message cannot be empty.");
       return;
     }
+
+    setStatus("");
 
     console.log("📩 Sending message with data:", {
       uniqueLink,
@@ -29,22 +32,21 @@ export default function SendMessage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           uniqueLink,
-          senderName: senderName || "Anonymous", // Ensure senderName is set
+          senderName: senderName || "Anonymous",
           message,
         }),
       });
 
-      console.log("🔹 Response Status:", res.status);
       const text = await res.text();
-      console.log("🔹 Raw Response Body:", text);
 
       try {
         const data = JSON.parse(text);
-        console.log("✅ Parsed Response:", data);
         if (res.ok) {
           setMessage("");
           setSenderName("");
           setStatus("Message sent successfully!");
+
+          setTimeout(() => setStatus(""), 3000);
         } else {
           setStatus(
             "Failed to send message: " + (data.error || "Unknown error")
@@ -61,28 +63,33 @@ export default function SendMessage() {
   };
 
   return (
-    <div className="p-4 border rounded-md shadow-md">
-      <h1 className="text-lg font-bold mb-2">Send an Anonymous Message</h1>
+    <div className={styles.container}>
+      <h1>Send an Anonymous Message</h1>
       <input
         type="text"
         value={senderName}
         onChange={(e) => setSenderName(e.target.value)}
         placeholder="Your Fake Name (Optional)"
-        className="border p-2 mb-2 w-full"
+        className={styles.input}
       />
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Type your message here..."
-        className="border p-2 mb-2 w-full"
+        className={styles.textarea}
       />
-      <button
-        onClick={handleSend}
-        className="bg-blue-500 text-white p-2 rounded-md"
-      >
+      <button onClick={handleSend} className={styles.button}>
         Send
       </button>
-      {status && <p className="mt-2 text-sm text-red-500">{status}</p>}
+      {status && (
+        <p
+          className={
+            status.includes("successfully") ? styles.success : styles.error
+          }
+        >
+          {status}
+        </p>
+      )}
     </div>
   );
 }
