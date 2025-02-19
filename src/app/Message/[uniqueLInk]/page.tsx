@@ -2,6 +2,14 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import {
+  Send,
+  MessageSquare,
+  User,
+  Sparkles,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import styles from "./page.module.css";
 
 export default function SendMessage() {
@@ -11,6 +19,8 @@ export default function SendMessage() {
   const [senderName, setSenderName] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
+  const [aiMessages, setAiMessages] = useState<string[]>([]);
+  const [loadingAI, setLoadingAI] = useState(false);
 
   const handleSend = async () => {
     if (!message.trim()) {
@@ -19,12 +29,6 @@ export default function SendMessage() {
     }
 
     setStatus("");
-
-    console.log("📩 Sending message with data:", {
-      uniqueLink,
-      senderName,
-      message,
-    });
 
     try {
       const res = await fetch("/api/send-message", {
@@ -44,7 +48,7 @@ export default function SendMessage() {
         if (res.ok) {
           setMessage("");
           setSenderName("");
-          setStatus("Message sent successfully!");
+          setStatus("Message sent successfully! ✅");
 
           setTimeout(() => setStatus(""), 3000);
         } else {
@@ -53,43 +57,106 @@ export default function SendMessage() {
           );
         }
       } catch (parseError) {
-        console.error("❌ Response is not valid JSON:", text);
         setStatus("Server response is not in expected format.");
       }
     } catch (error) {
-      console.error("🚨 Fetch error:", error);
       setStatus("Network error. Please try again.");
     }
   };
 
+  const generateAiMessages = async () => {
+    setLoadingAI(true);
+    setAiMessages([]);
+
+    try {
+      const res = await fetch("/api/generate-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setAiMessages(data.messages || []);
+      } else {
+        setAiMessages(["Failed to generate messages. Try again."]);
+      }
+    } catch (error) {
+      setAiMessages(["Error fetching AI messages."]);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
   return (
-    <div className={styles.container}>
+    <div className={styles.pageContainer}>
       <h1>Send an Anonymous Message</h1>
-      <input
-        type="text"
-        value={senderName}
-        onChange={(e) => setSenderName(e.target.value)}
-        placeholder="Your Fake Name (Optional)"
-        className={styles.input}
-      />
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message here..."
-        className={styles.textarea}
-      />
-      <button onClick={handleSend} className={styles.button}>
-        Send
-      </button>
-      {status && (
-        <p
-          className={
-            status.includes("successfully") ? styles.success : styles.error
-          }
-        >
-          {status}
-        </p>
-      )}
+
+      <div className={styles.messageBox}>
+        <div className={styles.inputContainer}>
+          <User size={20} className={styles.icon} />
+          <input
+            type="text"
+            value={senderName}
+            onChange={(e) => setSenderName(e.target.value)}
+            placeholder="Your Fake Name (Optional)"
+            className={styles.input}
+          />
+        </div>
+
+        <div className={styles.inputContainer}>
+          <MessageSquare size={20} className={styles.icon} />
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message here..."
+            className={styles.textarea}
+          />
+        </div>
+
+        <button onClick={handleSend} className={styles.button}>
+          <Send size={18} className={styles.sendIcon} /> Send
+        </button>
+
+        {status && (
+          <p
+            className={
+              status.includes("successfully") ? styles.success : styles.error
+            }
+          >
+            {status.includes("successfully") ? (
+              <CheckCircle size={18} />
+            ) : (
+              <AlertCircle size={18} />
+            )}
+            {status}
+          </p>
+        )}
+
+        <div className={styles.autoMessageSection}>
+          <button
+            onClick={generateAiMessages}
+            className={styles.autoMessageButton}
+            disabled={loadingAI}
+          >
+            <Sparkles size={18} />{" "}
+            {loadingAI ? "Generating..." : "Generate AI Messages"}
+          </button>
+
+          {aiMessages.length > 0 && (
+            <div className={styles.autoMessages}>
+              {aiMessages.map((msg, index) => (
+                <button
+                  key={index}
+                  className={styles.autoMessage}
+                  onClick={() => setMessage(msg)}
+                >
+                  {msg}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

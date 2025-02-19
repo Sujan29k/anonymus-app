@@ -5,6 +5,8 @@ import { Key, useEffect, useState } from "react";
 import type { IMessage } from "@/model/Message";
 import { Switch } from "@/components/ui/switch"; // Import the updated Switch
 import styles from "./dashboard.module.css"; // Import the dashboard styles
+import { RefreshCw } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -136,7 +138,7 @@ export default function Dashboard() {
         <div className={styles.messagesHeader}>
           <h2>Messages</h2>
           <button onClick={fetchMessages} className={styles.refreshButton}>
-            🔄
+            <RefreshCw size={24} />
           </button>
         </div>
 
@@ -152,7 +154,7 @@ export default function Dashboard() {
                   className={styles.deleteButton}
                   onClick={() => handleDelete(msg._id as string)}
                 >
-                  🗑️
+                  <Trash2 size={24} />
                 </button>
                 <p className={styles.senderName}>
                   {msg.senderName || generateFakeName()}

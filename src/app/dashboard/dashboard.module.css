@@ -122,15 +122,21 @@
 }
 
 .refreshButton {
-  font-size: 24px;
   background: none;
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  transition: transform 0.2s ease-in-out;
 }
 
 .refreshButton:hover {
+  transform: rotate(90deg);
   color: #008cff;
 }
+
 
 /* Messages List */
 .messagesList {
