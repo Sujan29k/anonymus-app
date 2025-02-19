@@ -5,7 +5,7 @@
   padding: 40px 20px;
   font-family: Arial, sans-serif;
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   align-items: center;
   min-height: 100vh;
   background: #f7f6f6;
@@ -110,6 +110,10 @@
   padding: 25px;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures that content is spaced out properly */
+  height: 100%; /* Take up full height of the parent container */
 }
 
 .messagesHeader {
@@ -137,14 +141,15 @@
   color: #008cff;
 }
 
-
 /* Messages List */
 .messagesList {
   list-style-type: none;
   padding: 0;
   display: flex;
-  flex-direction: row;
-  gap: 5rem;
+  flex-direction: column; /* Stack messages vertically */
+  gap: 1rem; /* Add some gap between messages */
+  width: 100%;
+  overflow-y: auto; /* Enable scrolling if the messages exceed the container height */
 }
 
 /* Individual Message Item */
@@ -157,8 +162,9 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  max-width: 40%;
-  width: 20%;
+  width: 100%; /* Let each message take up full width */
+  max-width: none; /* Remove the max-width to allow messages to expand fully */
+  box-sizing: border-box; /* Ensure padding and borders are included in the width calculation */
 }
 
 /* Sender Name */

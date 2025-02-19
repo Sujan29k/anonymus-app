@@ -1,6 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { ReactNode } from "react";
 
 export interface IMessage extends Document {
+  content: ReactNode;
+  timestamp: string | number | Date;
   userId: mongoose.Schema.Types.ObjectId;
   senderName?: string; // Optional field for fake name
   message: string;

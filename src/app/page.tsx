@@ -1,94 +1,145 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {/* Header Section */}
-      <header className="w-full p-5 bg-white shadow-md flex justify-between items-center px-10">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/logo.png"
-            alt="AnonymousApp Logo"
-            width={40}
-            height={40}
-          />
-          <h1 className="text-xl font-bold">AnonymousApp</h1>
-        </div>
-        <nav>
-          <ul className="flex gap-6">
-            <li>
-              <Link
-                href="/features"
-                className="text-gray-700 hover:text-blue-600"
-              >
-                Features
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="text-gray-700 hover:text-blue-600">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="text-gray-700 hover:text-blue-600"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
+    <div className="container">
+      {/* Left Section - Image */}
+      <div className="image-section">
+        <Image
+          src="/cov.png"
+          alt="Illustration"
+          width={500}
+          height={500}
+          className="illustration"
+        />
+      </div>
 
-      {/* Hero Section */}
-      <main className="text-center mt-12 px-4">
-        <h2 className="text-3xl font-bold text-gray-800">
-          Welcome to AnonymousApp
-        </h2>
-        <p className="mt-4 text-gray-600 max-w-xl mx-auto">
-          A secure and anonymous way to communicate. Sign up or log in to get
-          your unique link and start receiving anonymous messages.
-        </p>
+      {/* Right Section - Content */}
+      <div className="content-section">
+        <Image
+          src="/cover.png"
+          alt="User Avatar"
+          width={90}
+          height={90}
+          className="avatar"
+        />
+        <h1 className="title">FortnPage</h1>
+        <p className="subtitle">Anonymity Platform</p>
 
         {/* Buttons */}
-        <div className="mt-8 flex gap-6">
+        <div className="button-container">
           <Link href="/login">
-            <Button className="px-6 py-3 text-lg rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
-              Login
-            </Button>
+            <button className="button login-button">Login</button>
           </Link>
           <Link href="/signup">
-            <Button className="px-6 py-3 text-lg rounded-lg bg-green-600 hover:bg-green-700 text-white">
-              Sign Up
-            </Button>
+            <button className="button signup-button">Sign Up</button>
           </Link>
         </div>
+      </div>
 
-        {/* Illustration/Image */}
-        <div className="mt-12">
-          <Image
-            src="/secure-messaging.png"
-            alt="Secure Messaging Illustration"
-            width={400}
-            height={400}
-            className="mx-auto"
-          />
-        </div>
-      </main>
+      <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background-color: #f8f9fa;
+          padding: 2rem;
+          gap: 2rem;
+        }
 
-      {/* Footer */}
-      <footer className="w-full text-center mt-10 p-4 text-gray-600 text-sm">
-        &copy; {new Date().getFullYear()} AnonymousApp |
-        <Link href="/privacy-policy" className="ml-2 hover:underline">
-          Privacy Policy
-        </Link>{" "}
-        |
-        <Link href="/terms" className="ml-2 hover:underline">
-          Terms of Service
-        </Link>
-      </footer>
+        .image-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+          border-radius: 1px;
+          height: 85%;
+          background-color: #f3f5f6;
+        }
+
+        .content-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+          border-radius: 1px;
+          height: 85%;
+          text-align: center;
+          background-color: #f4f4f4;
+gap: 0.1rem;
+};
+        }
+
+        .illustration {
+          max-width: 90%;
+          height: auto;
+        }
+
+        .avatar {
+          border-radius: 50%;
+          margin-bottom: 1rem;
+          height:9rem;
+          width:9rem;
+        }
+
+        .title {
+          font-size: 3rem;
+          font-weight: bold;
+          color: #222;
+          margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+          font-size: 2rem;
+          color: #666;
+          margin-bottom: 3rem;
+        }
+
+        .button-container {
+          display: flex;
+          justify-content: center;
+          gap: 1.5rem;
+        }
+
+        .button {
+          padding: 1rem 2.5rem;
+          font-size: 1.5rem;
+          border-radius: 10px;
+          font-weight: 600;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.3s, transform 0.2s;
+          border: none;
+        }
+
+        .button:hover {
+          transform: scale(1.05);
+        }
+
+        .login-button {
+          background-color: #d51a29;
+        }
+
+        .login-button:hover {
+          background-color: #d56e77;
+        }
+
+        .signup-button {
+          background-color: #14263f;
+        }
+
+        .signup-button:hover {
+          background-color: #21506f;
+        }
+      `}</style>
     </div>
   );
 }
