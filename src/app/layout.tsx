@@ -3,8 +3,8 @@
 
 import { SessionProvider } from "next-auth/react";
 import type { ReactNode } from "react";
-
 export default function RootLayout({ children }: { children: ReactNode }) {
+; // Adjust the path as needed
   return (
     <html lang="en">
       <body>

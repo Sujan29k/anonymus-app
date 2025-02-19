@@ -1,0 +1,36 @@
+/* Switch container */
+.switch {
+    width: 62px !important;
+    height: 32px !important;
+    display: inline-flex;
+    align-items: center;
+    background-color: #ccc;
+    border-radius: 15px;
+    border: 2px solid #999;
+    transition: background 0.3s ease-in-out;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  /* Switch thumb (toggle button) */
+  .thumb {
+    width: 26px !important;
+    height: 26px !important;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  /* Checked state */
+  .switch[data-state="checked"] {
+    background: #2b8ddc !important;
+  }
+  
+  /* Move thumb when checked */
+  .switch[data-state="checked"] .thumb {
+    transform: translateX(30px);
+  }
+  

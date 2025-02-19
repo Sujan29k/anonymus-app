@@ -3,32 +3,34 @@
 import { useSession, signOut } from "next-auth/react";
 import { Key, useEffect, useState } from "react";
 import type { IMessage } from "@/model/Message";
-import styles from "./dashboard.module.css";
+import { Switch } from "@/components/ui/switch"; // Import the updated Switch
+import styles from "./dashboard.module.css"; // Import the dashboard styles
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [acceptMessages, setAcceptMessages] = useState(true);
 
-  // A simple function to generate a fake name (can be replaced with a more sophisticated approach if needed)
   const generateFakeName = (name?: string) => {
-    if (name) return name; // Keep real name if available
-
-    const fakeNames = ["John Doe", "Jane Smith", "Alex Johnson", "Chris Brown"];
+    if (name) return name;
+    const fakeNames = [
+      "John Doe",
+      "Jane Smith",
+      "Alex Johnson",
+      "Chris Brown",
+      "Sam Taylor",
+    ];
     return fakeNames[Math.floor(Math.random() * fakeNames.length)];
   };
 
-  const fakeName = generateFakeName(session?.user?.name ?? "");
-
   const fetchMessages = async () => {
     if (!session?.user) return;
-
     const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
 
     try {
       console.log("Fetching messages for:", uniqueLink);
-
       const res = await fetch(`/api/messages?uniqueLink=${uniqueLink}`);
 
       if (!res.ok) {
@@ -45,21 +47,12 @@ export default function Dashboard() {
 
       const data = await res.json();
       console.log("Fetched messages:", data);
-
-      if (data.messages?.length > 0) {
-        setMessages(data.messages);
-      } else {
-        setMessages([]);
-        console.warn("No messages received from API");
-      }
+      setMessages(data.messages?.length > 0 ? data.messages : []);
     } catch (err: unknown) {
       console.error("Failed to fetch messages:", err);
-
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred.");
-      }
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred."
+      );
     } finally {
       setLoading(false);
     }
@@ -67,12 +60,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchMessages();
-
-    // Auto-refresh messages every 5 seconds
-    const interval = setInterval(() => {
-      fetchMessages();
-    }, 5000);
-
+    const interval = setInterval(fetchMessages, 5000);
     return () => clearInterval(interval);
   }, [session]);
 
@@ -83,8 +71,6 @@ export default function Dashboard() {
   const linkUrl = `${window.location.origin}/Message/${uniqueLink}`;
 
   const handleDelete = async (messageId: string) => {
-    const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
-
     try {
       const res = await fetch("/api/delete-message", {
         method: "DELETE",
@@ -92,12 +78,12 @@ export default function Dashboard() {
         body: JSON.stringify({ messageId, uniqueLink }),
       });
 
-      const data = await res.json();
       if (res.ok) {
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg._id !== messageId)
         );
       } else {
+        const data = await res.json();
         setError(data.error || "Error deleting message");
       }
     } catch (err) {
@@ -106,22 +92,30 @@ export default function Dashboard() {
     }
   };
 
-  // Generate a fake name for the use
-
   return (
     <div className={styles.dashboardContainer}>
-      <h1 className={styles.greeting}>Welcome, {fakeName}</h1>
-
-      {/* Logout Button */}
-      <button
-        onClick={() => signOut({ callbackUrl: "/" })}
-        className={styles.logoutButton}
-      >
-        Logout
-      </button>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Anonymous Messages</h1>
+        <button
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className={styles.signOutButton}
+        >
+          Sign Out
+        </button>
+      </div>
 
       <section className={styles.linkSection}>
-        <p>Your anonymous message link:</p>
+        <div className={styles.linkHeader}>
+          <h2>Your Anonymous Link</h2>
+          <div className={styles.switchContainer}>
+            <span>Accept Messages:</span>
+            <Switch
+              checked={acceptMessages}
+              onCheckedChange={setAcceptMessages}
+            />
+          </div>
+        </div>
+
         <div className={styles.linkContainer}>
           <input
             type="text"
@@ -139,31 +133,38 @@ export default function Dashboard() {
       </section>
 
       <section className={styles.messagesSection}>
-        <h2>Received Messages:</h2>
+        <div className={styles.messagesHeader}>
+          <h2>Messages</h2>
+          <button onClick={fetchMessages} className={styles.refreshButton}>
+            🔄
+          </button>
+        </div>
+
         {loading ? (
           <p>Loading messages...</p>
         ) : error ? (
           <p className={styles.error}>{error}</p>
         ) : messages.length > 0 ? (
           <ul className={styles.messagesList}>
-            {messages.map((msg) => {
-              const sender = msg.senderName
-                ? msg.senderName
-                : generateFakeName();
-              return (
-                <li key={msg._id as Key} className={styles.messageItem}>
-                  <p>
-                    <strong>{sender}:</strong> {msg.message}
+            {messages.map((msg) => (
+              <li key={msg._id as Key} className={styles.messageItem}>
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => handleDelete(msg._id as string)}
+                >
+                  🗑️
+                </button>
+                <p className={styles.senderName}>
+                  {msg.senderName || generateFakeName()}
+                </p>
+                <div className={styles.messageContent}>
+                  <p>{msg.message}</p>
+                  <p className={styles.timestamp}>
+                    {new Date(msg.createdAt).toLocaleDateString()}
                   </p>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => handleDelete(msg._id as string)}
-                  >
-                    Delete
-                  </button>
-                </li>
-              );
-            })}
+                </div>
+              </li>
+            ))}
           </ul>
         ) : (
           <p>No messages yet.</p>

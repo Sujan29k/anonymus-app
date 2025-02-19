@@ -19,17 +19,16 @@ export default function Signup() {
     setError("");
 
     try {
-      // Passing isSignup and name along with credentials
       const res = await signIn("credentials", {
         ...form,
-        isSignup: "true", // Set the flag for signup
+        isSignup: "true",
         redirect: false,
       });
 
       if (res?.error) {
         setError(res.error);
       } else {
-        router.push("/dashboard"); // Redirect after signup
+        router.push("/dashboard");
       }
     } catch (error) {
       setError("Something went wrong. Please try again.");
@@ -39,13 +38,19 @@ export default function Signup() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
+        <div className={styles.logoContainer}>
+          <img
+            src="/anonymus.png"
+            height={100}
+            width={150}
+            alt="Logo"
+            className={styles.logo}
+          />
+        </div>
         <h1 className={styles.title}>Create Account</h1>
         {error && <p className={styles.error}>{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <label htmlFor="name" className={styles.label}>
-              Name
-            </label>
             <input
               id="name"
               type="text"
@@ -57,9 +62,6 @@ export default function Signup() {
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
-              Email
-            </label>
             <input
               id="email"
               type="email"
@@ -71,9 +73,6 @@ export default function Signup() {
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="password" className={styles.label}>
-              Password
-            </label>
             <input
               id="password"
               type="password"

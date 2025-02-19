@@ -1,134 +1,201 @@
+/* Dashboard container */
 .dashboardContainer {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .greeting {
-    text-align: center;
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 1.5rem;
-  }
-  
-  .linkSection {
-    margin-bottom: 2rem;
-  }
-  
-  .linkSection p {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .linkContainer {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .linkInput {
-    width: 80%;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-  }
-  
-  .copyButton {
-    padding: 0.6rem 1rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  .copyButton:hover {
-    background-color: #45a049;
-  }
-  
-  .messagesSection {
-    margin-top: 2rem;
-  }
-  
-  .messagesSection h2 {
-    font-size: 1.5rem;
-    color: #333;
-  }
-  
-  .messagesList {
-    margin-top: 1rem;
-    list-style: none;
-    padding: 0;
-  }
-  
-  .messageItem {
-    background-color: #fff;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    font-size: 1rem;
-    color: #444;
-  }
-  
-  .messageItem:last-child {
-    margin-bottom: 0;
-  }
-  
-  .logoutButton {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .logoutButton:hover {
-    background-color: #e60000;
-  }
-  /* src/app/Message/[uniqueLink]/page.module.css */
+  max-width: auto;
+  margin: auto;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  min-height: 100vh;
+  background: #f7f6f6;
+}
 
-.deleteButton {
-  background-color: red;
+/* Header section */
+.header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #222;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Sign Out Button */
+.signOutButton {
+  background-color: #ff4d4d;
   color: white;
+  padding: 12px 20px;
   border: none;
-  padding: 5px 10px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-left: 10px;
-  border-radius: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+  height: 3.5rem;
+}
+
+.signOutButton:hover {
+  background-color: #cc0000;
+}
+
+/* Link Section */
+.linkSection {
+  width: 100%;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.linkHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.switchContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 18px;
+}
+
+.linkContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.linkInput {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 18px;
+  background: #f9f9f9;
+}
+
+.copyButton {
+  background-color: #008cff;
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  margin-left: 12px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.copyButton:hover {
+  background-color: #005dbb;
+}
+
+/* Messages Section */
+.messagesSection {
+  width: 100%;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.messagesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.refreshButton {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.refreshButton:hover {
+  color: #008cff;
+}
+
+/* Messages List */
+.messagesList {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+}
+
+/* Individual Message Item */
+.messageItem {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-width: 40%;
+  width: 20%;
+}
+
+/* Sender Name */
+.senderName {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* Message and Date */
+.messageContent {
+  font-size: 16px;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+}
+
+.timestamp {
+  font-size: 14px;
+  color: gray;
+  margin-top: 5px;
+}
+
+/* Delete Button */
+.deleteButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
 }
 
 .deleteButton:hover {
-  background-color: darkred;
+  color: red;
 }
 
-  
-  
-  @media (max-width: 768px) {
-    .linkContainer {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  
-    .linkInput {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-  
-    .copyButton {
-      width: 100%;
-    }
-  }
-
-  
+/* Error Message */
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  font-size: 18px;
+}

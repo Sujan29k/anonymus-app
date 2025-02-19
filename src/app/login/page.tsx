@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./login.module.css"; // Adjust the path if needed
+import Image from "next/image";
+import styles from "./login.module.css"; // Adjust path if needed
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -37,8 +38,14 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
+        {/* Logo */}
+        <div className={styles.logoContainer}>
+          <Image alt="Logo" width={150} height={100} src={"/anonymus.png"} />
+        </div>
+
         <h1 className={styles.title}>Login</h1>
         {error && <p className={styles.error}>{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <input
@@ -64,6 +71,7 @@ export default function Login() {
             Login
           </button>
         </form>
+
         <div className={styles.linkContainer}>
           <p>
             Don't have an account?{" "}
