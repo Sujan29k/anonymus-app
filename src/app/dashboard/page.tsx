@@ -3,10 +3,11 @@
 import { useSession, signOut } from "next-auth/react";
 import { Key, useEffect, useState } from "react";
 import type { IMessage } from "@/model/Message";
-import { Switch } from "@/components/ui/switch"; // Import the updated Switch
-import styles from "./dashboard.module.css"; // Import the dashboard styles
-import { RefreshCw } from "lucide-react";
-import { Trash2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import styles from "./dashboard.module.css";
+import { RefreshCw, Trash2 } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify"; // Import Toast
+import "react-toastify/dist/ReactToastify.css"; // Import Toast styles
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -32,26 +33,14 @@ export default function Dashboard() {
     const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
 
     try {
-      console.log("Fetching messages for:", uniqueLink);
       const res = await fetch(`/api/messages?uniqueLink=${uniqueLink}`);
-
       if (!res.ok) {
-        let errorMessage = `API Error: ${res.status} ${res.statusText}`;
-
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await res.json();
-          errorMessage = errorData.error || errorMessage;
-        }
-
-        throw new Error(errorMessage);
+        const errorData = await res.json();
+        throw new Error(errorData.error || `API Error: ${res.status}`);
       }
-
       const data = await res.json();
-      console.log("Fetched messages:", data);
       setMessages(data.messages?.length > 0 ? data.messages : []);
     } catch (err: unknown) {
-      console.error("Failed to fetch messages:", err);
       setError(
         err instanceof Error ? err.message : "An unknown error occurred."
       );
@@ -72,6 +61,19 @@ export default function Dashboard() {
   const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
   const linkUrl = `${window.location.origin}/Message/${uniqueLink}`;
 
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(linkUrl);
+    toast.success("Link copied to clipboard!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      theme: "colored",
+    });
+  };
+
   const handleDelete = async (messageId: string) => {
     try {
       const res = await fetch("/api/delete-message", {
@@ -89,13 +91,15 @@ export default function Dashboard() {
         setError(data.error || "Error deleting message");
       }
     } catch (err) {
-      console.error("Network error:", err);
       setError("Failed to delete the message.");
     }
   };
 
   return (
     <div className={styles.dashboardContainer}>
+      {/* Toast Container for notifications */}
+      <ToastContainer />
+
       <div className={styles.header}>
         <h1 className={styles.title}>Anonymous Messages</h1>
         <button
@@ -125,10 +129,7 @@ export default function Dashboard() {
             readOnly
             className={styles.linkInput}
           />
-          <button
-            onClick={() => navigator.clipboard.writeText(linkUrl)}
-            className={styles.copyButton}
-          >
+          <button onClick={handleCopyLink} className={styles.copyButton}>
             Copy Link
           </button>
         </div>
