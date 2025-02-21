@@ -26,7 +26,7 @@ export default function Home() {
           height={90}
           className="avatar"
         />
-        <h1 className="title">FortnPage</h1>
+        <h1 className="title">ObsCura</h1>
         <p className="subtitle">Anonymity Platform</p>
 
         {/* Buttons */}
@@ -46,7 +46,7 @@ export default function Home() {
           justify-content: center;
           align-items: center;
           height: 100vh;
-          background-color: #f8f9fa;
+          background-color: #ffffff;
           padding: 2rem;
           gap: 2rem;
         }
@@ -60,7 +60,7 @@ export default function Home() {
           padding: 2rem;
           border-radius: 1px;
           height: 85%;
-          background-color: #f3f5f6;
+          background-color: #e9e9e9;
         }
 
         .content-section {
@@ -73,7 +73,7 @@ export default function Home() {
           border-radius: 1px;
           height: 85%;
           text-align: center;
-          background-color: #f4f4f4;
+          background-color: #ffffff;
 gap: 0.1rem;
 };
         }
@@ -129,11 +129,11 @@ gap: 0.1rem;
         }
 
         .login-button:hover {
-          background-color: #d56e77;
+          background-color: #d5525d;
         }
 
         .signup-button {
-          background-color: #14263f;
+          background-color: #000000;
         }
 
         .signup-button:hover {

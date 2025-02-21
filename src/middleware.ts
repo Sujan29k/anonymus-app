@@ -4,20 +4,24 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // Define protected routes
   const protectedRoutes = ["/dashboard"];
+  const authRoutes = ["/login", "/signup"];
 
-  if (protectedRoutes.includes(req.nextUrl.pathname)) {
+  const { pathname } = req.nextUrl;
+
+  if (protectedRoutes.includes(pathname)) {
     if (!token) {
-      // Redirect unauthenticated users to login page
       return NextResponse.redirect(new URL("/login", req.url));
     }
+  }
+
+  if (authRoutes.includes(pathname) && token) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
 }
 
-// Apply middleware to protected routes
 export const config = {
-  matcher: ["/dashboard/:path*"], // Protects all routes under /dashboard
+  matcher: ["/dashboard/:path*", "/login", "/signup"],
 };
