@@ -6,15 +6,15 @@ import type { IMessage } from "@/model/Message";
 import { Switch } from "@/components/ui/switch";
 import styles from "./dashboard.module.css";
 import { RefreshCw, Trash2 } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify"; // Import Toast
-import "react-toastify/dist/ReactToastify.css"; // Import Toast styles
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [acceptMessages, setAcceptMessages] = useState(true);
+  const [receivingMessages, setReceivingMessages] = useState(true); // Update state name
 
   const generateFakeName = (name?: string) => {
     if (name) return name;
@@ -46,6 +46,38 @@ export default function Dashboard() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+  const fetchUserSettings = async () => {
+    if (!session?.user) return;
+    const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
+
+    try {
+      const res = await fetch(`/api/toggle-messages?uniqueLink=${uniqueLink}`);
+      const data = await res.json();
+
+      // Set the initial state based on the current settings
+      if (data.receivingMessages !== undefined) {
+        setReceivingMessages(data.receivingMessages);
+      }
+    } catch (err) {
+      console.error("Error fetching user settings:", err);
+    }
+  };
+  const toggleReceivingMessages = async (checked: boolean) => {
+    setReceivingMessages(checked); // Update the local state with receivingMessages
+    try {
+      const res = await fetch("/api/toggle-messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uniqueLink, receivingMessages: checked }), // Send receivingMessages instead of acceptMessages
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update message settings.");
+      }
+    } catch (err) {
+      toast.error("Could not update message settings.");
     }
   };
 
@@ -97,7 +129,6 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* Toast Container for notifications */}
       <ToastContainer />
 
       <div className={styles.header}>
@@ -116,8 +147,8 @@ export default function Dashboard() {
           <div className={styles.switchContainer}>
             <span>Accept Messages:</span>
             <Switch
-              checked={acceptMessages}
-              onCheckedChange={setAcceptMessages}
+              checked={receivingMessages} // Use receivingMessages instead of acceptMessages
+              onCheckedChange={toggleReceivingMessages} // Call the updated function
             />
           </div>
         </div>
@@ -157,6 +188,7 @@ export default function Dashboard() {
                 >
                   <Trash2 size={24} />
                 </button>
+
                 <p className={styles.senderName}>
                   {msg.senderName || generateFakeName()}
                 </p>

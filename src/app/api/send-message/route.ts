@@ -7,9 +7,6 @@ export async function POST(req: Request) {
   try {
     const { uniqueLink, senderName, message } = await req.json();
 
-    // Log the received data for debugging
-    console.log("Received data:", { uniqueLink, senderName, message });
-
     if (!uniqueLink || !message) {
       return NextResponse.json(
         { error: "Missing required fields: uniqueLink or message" },
@@ -17,23 +14,26 @@ export async function POST(req: Request) {
       );
     }
 
-    // Connect to the database
     await connectDB();
-
-    // Find the user by unique link
     const user = await User.findOne({ uniqueLink });
+
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Create a new message with the provided senderName or default to "Anonymous"
+    if (!user.receivingMessages) {
+      return NextResponse.json(
+        { error: "User is not accepting messages at the moment." },
+        { status: 403 }
+      );
+    }
+
     const newMessage = new Message({
       userId: user._id,
       senderName: senderName || "Anonymous",
       message,
     });
-    console.log("Message to be saved:", newMessage);
-    // Save the message to the database
+
     await newMessage.save();
 
     return NextResponse.json(

@@ -8,16 +8,18 @@ import styles from "./switch.module.css"; // Import the CSS file
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
->(({ className, ...props }, ref) => (
-  <SwitchPrimitives.Root
-    className={cn(styles.switch, className)}
-    {...props}
-    ref={ref}
-  >
-    <SwitchPrimitives.Thumb className={styles.thumb} />
-  </SwitchPrimitives.Root>
-));
+>(({ className, ...props }, ref) => {
+  return (
+    <SwitchPrimitives.Root
+      ref={ref}
+      className={cn(styles.switch, className)}
+      {...props}
+    >
+      <SwitchPrimitives.Thumb className={styles.thumb} />
+    </SwitchPrimitives.Root>
+  );
+});
 
-Switch.displayName = SwitchPrimitives.Root.displayName;
+Switch.displayName = "Switch";
 
 export { Switch };
