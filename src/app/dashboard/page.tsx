@@ -6,78 +6,31 @@ import type { IMessage } from "@/model/Message";
 import { Switch } from "@/components/ui/switch";
 import styles from "./dashboard.module.css";
 import { RefreshCw, Trash2 } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [receivingMessages, setReceivingMessages] = useState(true); // Update state name
-
-  const generateFakeName = (name?: string) => {
-    if (name) return name;
-    const fakeNames = [
-      "John Doe",
-      "Jane Smith",
-      "Alex Johnson",
-      "Chris Brown",
-      "Sam Taylor",
-    ];
-    return fakeNames[Math.floor(Math.random() * fakeNames.length)];
-  };
+  const [receivingMessages, setReceivingMessages] = useState(true);
 
   const fetchMessages = async () => {
     if (!session?.user) return;
+    setLoading(true);
+
     const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
 
     try {
       const res = await fetch(`/api/messages?uniqueLink=${uniqueLink}`);
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || `API Error: ${res.status}`);
+        throw new Error("Failed to fetch messages");
       }
       const data = await res.json();
       setMessages(data.messages?.length > 0 ? data.messages : []);
-    } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred."
-      );
+    } catch (err) {
+      setError("Error fetching messages.");
     } finally {
       setLoading(false);
-    }
-  };
-  const fetchUserSettings = async () => {
-    if (!session?.user) return;
-    const uniqueLink = (session.user as { uniqueLink: string }).uniqueLink;
-
-    try {
-      const res = await fetch(`/api/toggle-messages?uniqueLink=${uniqueLink}`);
-      const data = await res.json();
-
-      // Set the initial state based on the current settings
-      if (data.receivingMessages !== undefined) {
-        setReceivingMessages(data.receivingMessages);
-      }
-    } catch (err) {
-      console.error("Error fetching user settings:", err);
-    }
-  };
-  const toggleReceivingMessages = async (checked: boolean) => {
-    setReceivingMessages(checked); // Update the local state with receivingMessages
-    try {
-      const res = await fetch("/api/toggle-messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uniqueLink, receivingMessages: checked }), // Send receivingMessages instead of acceptMessages
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to update message settings.");
-      }
-    } catch (err) {
-      toast.error("Could not update message settings.");
     }
   };
 
@@ -95,15 +48,6 @@ export default function Dashboard() {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(linkUrl);
-    toast.success("Link copied to clipboard!", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      theme: "colored",
-    });
   };
 
   const handleDelete = async (messageId: string) => {
@@ -118,19 +62,14 @@ export default function Dashboard() {
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg._id !== messageId)
         );
-      } else {
-        const data = await res.json();
-        setError(data.error || "Error deleting message");
       }
-    } catch (err) {
-      setError("Failed to delete the message.");
+    } catch {
+      setError("Error deleting message.");
     }
   };
 
   return (
     <div className={styles.dashboardContainer}>
-      <ToastContainer />
-
       <div className={styles.header}>
         <h1 className={styles.title}>Anonymous Messages</h1>
         <button
@@ -147,8 +86,8 @@ export default function Dashboard() {
           <div className={styles.switchContainer}>
             <span>Accept Messages:</span>
             <Switch
-              checked={receivingMessages} // Use receivingMessages instead of acceptMessages
-              onCheckedChange={toggleReceivingMessages} // Call the updated function
+              checked={receivingMessages}
+              onCheckedChange={setReceivingMessages}
             />
           </div>
         </div>
@@ -169,8 +108,16 @@ export default function Dashboard() {
       <section className={styles.messagesSection}>
         <div className={styles.messagesHeader}>
           <h2>Messages</h2>
-          <button onClick={fetchMessages} className={styles.refreshButton}>
-            <RefreshCw size={24} />
+          <button
+            onClick={fetchMessages}
+            className={styles.refreshButton}
+            disabled={loading}
+          >
+            {loading ? (
+              <RefreshCw size={24} className={styles.loadingIcon} />
+            ) : (
+              <RefreshCw size={24} />
+            )}
           </button>
         </div>
 
@@ -188,9 +135,8 @@ export default function Dashboard() {
                 >
                   <Trash2 size={24} />
                 </button>
-
                 <p className={styles.senderName}>
-                  {msg.senderName || generateFakeName()}
+                  {msg.senderName || "Anonymous"}
                 </p>
                 <div className={styles.messageContent}>
                   <p>{msg.message}</p>
